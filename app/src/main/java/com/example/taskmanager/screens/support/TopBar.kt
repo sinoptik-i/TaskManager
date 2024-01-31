@@ -8,13 +8,13 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.taskmanager.screens.SearchState
 import com.example.taskmanager.viewmodels.AllTasksViewModel
@@ -45,16 +45,18 @@ fun TopBar(
                     .clickable {
                         searchState.value = SearchState.INPUT
                     },
-                text = allTasksViewModel.getQuery()
+                text = allTasksViewModel.getQuery(),
+                color= Color.White
             )
-        } else {
-            IconButton(onClick = {
+        }
+        else {
+            /*IconButton(onClick = {
                 scope.launch {
                     scaffoldState.drawerState.open()
                 }
             }) {
                 Icon(Icons.Filled.Menu, "")
-            }
+            }*/
             Spacer(modifier = Modifier.weight(1f))
         }
         IconButton(onClick = {
@@ -64,3 +66,4 @@ fun TopBar(
         }
     }
 }
+

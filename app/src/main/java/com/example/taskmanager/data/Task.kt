@@ -23,8 +23,8 @@ const val TAG = "Task"
 data class Task(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int,
-    @ColumnInfo(name = "title") val title: String = "title",
-    @ColumnInfo(name = "description") val description: String = "description",
+    @ColumnInfo(name = "title") val title: String ="",// "title",
+    @ColumnInfo(name = "description") val description: String ="",// "description",
     @ColumnInfo(name = "completionTime") val completionTime: String = "",
     @ColumnInfo(name = "finished") val finished: Boolean = false,
     @ColumnInfo(name = "attemptCount") val attemptCount: Int = 0,
