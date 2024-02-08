@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.rememberScaffoldState
@@ -21,11 +20,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.taskmanager.data.Task
-import com.example.taskmanager.screens.support.DrawerMenu
 import com.example.taskmanager.screens.support.MyBottomAppBarPager
 import com.example.taskmanager.screens.support.SearchAlertDialog
 import com.example.taskmanager.screens.support.SupportSelectedModeForPager
@@ -39,7 +36,7 @@ enum class SearchState { OFF, INPUT, RESULTS }
 
 @Composable
 fun AllTasksView(
-    onItemSelect: (work: Task) -> Unit,
+    onItemSelect: (task: Task) -> Unit,
     swapToOneItemView: () -> Unit,
     //   settingsMaster: SettingsMaster,
     onBackForDrawer: () -> Unit = {},

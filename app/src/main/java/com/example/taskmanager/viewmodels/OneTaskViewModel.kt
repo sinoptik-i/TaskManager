@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-
+import javax.inject.Singleton
 
 @HiltViewModel
 class OneTaskViewModel @Inject constructor(
@@ -24,8 +24,20 @@ class OneTaskViewModel @Inject constructor(
 
     val TAG = this.javaClass.simpleName
 
-    var currentTask = Task(id = 0)// by mutableStateOf(Task(id = 0))
+        // lateinit var currentTask :Task//= Task(id = 0)// by mutableStateOf(Task(id = 0))
+    var currentTask  by mutableStateOf(Task(id = 0))
 
+    init {
+        Log.e(TAG,"init")
+    }
+    override fun onCleared() {
+        Log.e(TAG,"onCleared $currentTask")
+        super.onCleared()
+        Log.e(TAG,"onCleared $currentTask")
+    }
+
+
+//    fun currentTaskIsEmpty() = !this::currentTask.isInitialized //currentTask.id == 0
     fun currentTaskIsEmpty() = currentTask.id == 0
 
 

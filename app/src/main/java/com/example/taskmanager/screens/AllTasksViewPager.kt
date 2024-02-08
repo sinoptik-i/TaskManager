@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.taskmanager.data.Task
 import com.example.taskmanager.screens.support.SupportSelectedModeForPager
 import com.example.taskmanager.viewmodels.AllTasksViewModel
+import com.example.taskmanager.viewmodels.OneTaskViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -62,6 +63,7 @@ fun AllTasks(
     pagerState: PagerState,
     supportSelectedModeForPager: SupportSelectedModeForPager,
     allTasksViewModel: AllTasksViewModel = hiltViewModel(),
+    oneTaskViewModel: OneTaskViewModel= hiltViewModel()
 ) {
     HorizontalPager(
 
@@ -81,6 +83,7 @@ fun AllTasks(
                 //KAK ETO OBRABOTAT'?
                 val checkState by supportSelectedModeForPager.getCheckState(currentItem)
                 val selectItem = {
+                   // oneTaskViewModel.currentTask=currentItem
                     onItemSelect(currentItem)
                     swapToOneItemView()
                 }

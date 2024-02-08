@@ -9,12 +9,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taskmanager.viewmodels.OneTaskViewModel
 
 
-
 @Composable
 fun Navigation(
     oneTaskViewModel: OneTaskViewModel = hiltViewModel()
 ) {
-    val TAG ="Navigation"
+
+
+    val TAG = "Navigation"
     val navController = rememberNavController()
     /*val currentTask = remember {
         mutableStateOf(oneTaskViewModel.currentTask)
@@ -29,28 +30,23 @@ fun Navigation(
         }
     ) {
         composable(ALL_TASKS_VIEW) {
-          /* if( navController.popBackStack()){
-               navController.clearBackStack(ALL_TASKS_VIEW)
-           }
-
-            Log.e(TAG,"${it.destination.route}")
-            Log.e(TAG,"${it.arguments}")
-*/
             AllTasksView(
-                onItemSelect = {
-                   oneTaskViewModel.currentTask = it
+                onItemSelect = { selectedTask ->
+                    oneTaskViewModel.currentTask = selectedTask
+                    Log.e("$TAG ATV onItemSelect", oneTaskViewModel.currentTask.title)
                 },
                 swapToOneItemView = {
+                 //   Log.e("$TAG ATV swapToOneItemView", oneTaskViewModel.currentTask.title)
                     navController.navigate(ONE_FULL_TASK)
                 }
             )
         }
         composable(ONE_FULL_TASK) {
-//            Log.e(TAG,"${it.destination.route}")
+            Log.e("$TAG OFT", oneTaskViewModel.currentTask.title)
             OneFullTask(
                 //task = currentTask.value,
                 onContinueClicked = {
-                    navController.navigate(ALL_TASKS_VIEW)
+                    navController.popBackStack()
                 })
         }
     }
