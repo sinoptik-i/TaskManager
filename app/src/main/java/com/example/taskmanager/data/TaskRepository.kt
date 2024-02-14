@@ -30,6 +30,6 @@ class TaskRepository @Inject constructor(
             dao.delete(task)
         }
 
-     suspend fun getTaskById(id: Int) = dao.getTaskById(id)
+     fun getTaskById(id: Int) = dao.getTaskById(id)
      suspend fun trackTaskById(id: Int) = dao.trackTaskById(id)
 }

@@ -6,7 +6,9 @@ import com.example.taskmanager.cloudDb.ICloudDb
 import com.example.taskmanager.cloudDb.fireStore.FirestoreDB
 import com.example.taskmanager.data.Task
 import com.example.taskmanager.data.TaskRepository
+import com.example.taskmanager.getNowDate
 import com.example.taskmanager.getNowTime
+import com.example.taskmanager.getNowTimePlus3Min
 import com.example.taskmanager.notifications.WorkOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +33,7 @@ class AllTasksViewModel @Inject constructor(
             0,
             "title ${getNowTime()} ",
             "descr",
-            "",
+            "${getNowDate()} ${getNowTimePlus3Min()}",
             it % 2 != 0,
             0,
             ""

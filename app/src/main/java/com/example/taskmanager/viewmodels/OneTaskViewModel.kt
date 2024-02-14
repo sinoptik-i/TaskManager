@@ -1,6 +1,6 @@
 package com.example.taskmanager.viewmodels
 
-import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,12 +9,25 @@ import com.example.taskmanager.data.TaskRepository
 import com.example.taskmanager.notifications.WorkOperator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import javax.inject.Singleton
+data class ContentState<T : Any>(
+    val content: T? = null,
+    val isInProgres: Boolean = false,
+    val error: Throwable? = null
+) {
+
+}
 
 @HiltViewModel
 class OneTaskViewModel @Inject constructor(
@@ -24,63 +37,71 @@ class OneTaskViewModel @Inject constructor(
 
     val TAG = this.javaClass.simpleName
 
-        // lateinit var currentTask :Task//= Task(id = 0)// by mutableStateOf(Task(id = 0))
-    var currentTask  by mutableStateOf(Task(id = 0))
+    private val taskIdFlow = MutableStateFlow<Int?>(null)
+    val state: StateFlow<ContentState<Task>> =
+        taskIdFlow.flatMapLatest { id ->
+            id?.let {
+                flow {
+                    emit(ContentState(isInProgres = true))
+                    try {
+                        getTaskByIdScope(id)
+                            .let {
+                                delay(5000)
+                                emit(ContentState(it)) }
+                    } catch (error: Throwable) {
+                        emit(ContentState(error = error))
+                    }
 
-    init {
-        Log.e(TAG,"init")
-    }
-    override fun onCleared() {
-        Log.e(TAG,"onCleared $currentTask")
-        super.onCleared()
-        Log.e(TAG,"onCleared $currentTask")
-    }
-
-
-//    fun currentTaskIsEmpty() = !this::currentTask.isInitialized //currentTask.id == 0
-    fun currentTaskIsEmpty() = currentTask.id == 0
-
-
-    fun setCurrentItemFromNotification(id: Int): Boolean {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.e(TAG, "id $id")
-            Log.e(TAG, "${currentTask.id} ${currentTask.title}")
-            currentTask = getWorkById(id) ?: currentTask
-            Log.e(TAG, "${currentTask.id} ${currentTask.title}")
+                }
+            } ?: flowOf(ContentState(content = Task(0)))
         }
-        return false
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(),
+                ContentState(isInProgres = true)
+            )
+
+   // var task = Task(0)
+
+
+    fun setTask(id: Int) {
+        taskIdFlow.value = id
     }
 
-    suspend fun getWorkById(id: Int): Task? = repository.getTaskById(id)
-
+    suspend fun getTaskByIdScope(id: Int) = viewModelScope
+        .async(Dispatchers.IO) {
+            return@async repository.getTaskById(id)
+        }.await() ?: Task(id = 0)
 
     private fun addNotifications(task: Task) {
         workOperator.addNotifications(task)
-
     }
 
-    fun tryToAddTask(): Boolean {
-        if (currentTask.title != "") {
+    fun tryToAddTask(task: Task): Boolean {
+        if (task.title != "") {
             viewModelScope.launch {
                 val id = repository.add(
-                    currentTask
+                    task
                 ).toInt()
-                this@OneTaskViewModel.currentTask = currentTask.copy(id = id)
+                //если создалась новая таска, до добавления в бд id=0
+                // @PrimaryKey(autoGenerate = true) сам создает нужный id
+                val newTask = task.copy(id = id)
                 addNotifications(
-                    this@OneTaskViewModel.currentTask
+                    newTask
                 )
             }
             return true
-        } else if (currentTask.description == "") {
-            return false
         }
-        return true
+        /*else if (task.description == "") {
+            return false
+        }*/
+        return false
     }
 
 
-    fun completeTask() {
-        workOperator.deleteNotification(currentTask.id)
-        currentTask = currentTask.copy(finished = true)
-        tryToAddTask()
+    fun completeTask(task: Task) {
+        workOperator.deleteNotification(task.id)
+        val newTask = task.copy(finished = true)
+        tryToAddTask(newTask)
     }
 }

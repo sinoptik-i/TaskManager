@@ -38,9 +38,7 @@ enum class SearchState { OFF, INPUT, RESULTS }
 fun AllTasksView(
     onItemSelect: (task: Task) -> Unit,
     swapToOneItemView: () -> Unit,
-    //   settingsMaster: SettingsMaster,
-    onBackForDrawer: () -> Unit = {},
-    allTasksViewModel: AllTasksViewModel = hiltViewModel()
+    allTasksViewModel: AllTasksViewModel= hiltViewModel()
 ) {
 
     val searchState = rememberSaveable { mutableStateOf(SearchState.OFF) }
@@ -54,10 +52,6 @@ fun AllTasksView(
             scaffoldState.drawerState.close()
         }
     }
-    /*  settingsMaster.closeDrawer = closeDrawer
-      settingsMaster.isShownDrawerMenu = scaffoldState.drawerState.isOpen*/
-
-
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -83,6 +77,7 @@ fun AllTasksView(
             SearchAlertDialog(searchState)
         }
         val createNewItem = {
+           // onItemSelect(Task(0))
             onItemSelect(allTasksViewModel.getExampleItems(1)[0])
             swapToOneItemView()
         }
