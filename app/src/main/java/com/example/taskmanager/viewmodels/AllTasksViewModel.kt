@@ -22,9 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllTasksViewModel @Inject constructor(
-    val taskRepository: TaskRepository,
-    val workOperator: WorkOperator,
-    val firestoreDB: FirestoreDB//ICloudDb
+    private val taskRepository: TaskRepository,
+    private val workOperator: WorkOperator,
+    private val firestoreDB: FirestoreDB//ICloudDb
 ) : ViewModel() {
     val TAG = this.javaClass.simpleName
 
@@ -41,34 +41,27 @@ class AllTasksViewModel @Inject constructor(
     }
 
 
-    fun delAndUploadCloud() {
-        viewModelScope.launch {
-            taskRepository.getAllTasks().first { items ->
-                firestoreDB.delAndUpload(items)
-                true
-            }
-        }
-    }
+    fun delAndUploadCloud() = firestoreDB.uploadItems()
 
-      fun downloadAllItemsFromCloud() {
-          firestoreDB.downloadAllItemsAndSaveInDb()
-      }
+    fun downloadAllItemsFromCloud() = firestoreDB.downloadAllItems()
+
+    fun clearCloudDb() = firestoreDB.clearDb()
 
 
-    fun getActualTasks() = taskRepository.getUnfinishedTasks().map { tasks ->
+    private fun getActualTasks() = taskRepository.getUnfinishedTasks().map { tasks ->
         tasks.filter { task ->
             !task.isMissed()
         }
     }
 
-    fun getWastedTasks() = taskRepository.getUnfinishedTasks().map { tasks ->
+    private fun getWastedTasks() = taskRepository.getUnfinishedTasks().map { tasks ->
         tasks.filter { task ->
             task.isMissed()
         }
     }
 
     // отбирает таски в зависимости от выбранной вкладки
-    fun flowAllItemsForPager(pagerState: Int): Flow<List<Task>> {
+    private fun flowAllItemsForPager(pagerState: Int): Flow<List<Task>> {
         //     Log.e(TAG, "state: $pagerState")
         return when (pagerState) {
             0 -> getActualTasks()

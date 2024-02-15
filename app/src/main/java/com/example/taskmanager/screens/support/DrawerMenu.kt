@@ -8,18 +8,18 @@ import com.example.taskmanager.viewmodels.AllTasksViewModel
 
 @Composable
 fun DrawerMenu(
-
-    onBack: () ->Unit={},
+    onBack: () -> Unit = {},
     allTasksViewModel: AllTasksViewModel = hiltViewModel()
 ) {
-      ButtonRow(
-        text = "Upload works"
-    ) {
+    ButtonRow(text = "Upload works") {
         allTasksViewModel.delAndUploadCloud()
     }
 
     ButtonRow(text = "Download works") {
         allTasksViewModel.downloadAllItemsFromCloud()
+    }
+    ButtonRow(text = "Clear Cloud Db") {
+        allTasksViewModel.clearCloudDb()
     }
 }
 

@@ -9,15 +9,18 @@ import javax.inject.Singleton
 
 @Singleton
 class TaskRepository @Inject constructor(
-     val dao: TaskDao,
-     val scope: CoroutineScope
+    private val dao: TaskDao,
+    private val scope: CoroutineScope
 )  {
      fun getAllTasks() = dao.getAllTasks()
 
      fun getUnfinishedTasks() = dao.getUnfinishedTasks()
      fun getFinishedTasks()=dao.getFinishedTasks()
 
-    //  fun getWastedWorks()
+
+    fun clearDb()=scope.launch {
+        dao.clearDb()
+    }
 
 
      suspend fun add(task: Task) =

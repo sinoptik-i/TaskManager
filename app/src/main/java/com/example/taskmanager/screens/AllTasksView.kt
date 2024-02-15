@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.taskmanager.data.Task
+import com.example.taskmanager.screens.support.DrawerMenu
 import com.example.taskmanager.screens.support.MyBottomAppBarPager
 import com.example.taskmanager.screens.support.SearchAlertDialog
 import com.example.taskmanager.screens.support.SupportSelectedModeForPager
@@ -67,11 +68,12 @@ fun AllTasksView(
                 MyBottomAppBarPager(supportSelectedMode)
             }
         },
-        /*drawerContent = {
+        drawerContent = {
+
             DrawerMenu(
-                onBack = onBackForDrawer
+               // onBack = onBackForDrawer
             )
-        }*/)
+        })
     { padding ->
         if (searchState.value == SearchState.INPUT) {
             SearchAlertDialog(searchState)

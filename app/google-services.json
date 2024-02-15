@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "357016044410",
+    "firebase_url": "https://taskmanager-8317b-default-rtdb.firebaseio.com",
     "project_id": "taskmanager-8317b",
     "storage_bucket": "taskmanager-8317b.appspot.com"
   },

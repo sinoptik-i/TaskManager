@@ -5,12 +5,15 @@ import com.example.taskmanager.data.Task
 
 interface ICloudDb {
 
-    fun uploadAllItems(items: List<Task>)
+    //clear existing items in cloudDb, then upload all items from roomDb
+    fun uploadItems()
 
-    fun downloadAllItems(): List<Task>
+    //clear existing items in cloudDb, then upload selected items from roomDb
+    fun uploadItems(items: List<Task>)
 
-    fun downloadAllItemsAndSaveInDb()
+    //clear existing items in roomDb, then download all items from cloudDb
+    fun downloadAllItems()
 
-    suspend fun deleteAllItems()
+    fun clearDb()
 
 }

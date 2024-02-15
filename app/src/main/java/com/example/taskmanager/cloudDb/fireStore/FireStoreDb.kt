@@ -1,6 +1,5 @@
 package com.example.taskmanager.cloudDb.fireStore
 
-import android.provider.Settings
 import android.util.Log
 import com.example.taskmanager.cloudDb.ICloudDb
 import com.example.taskmanager.data.Task
@@ -17,91 +16,86 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val COLLECTION_NAME_PREFIX = "COLLECTION_NAME_PREFIX"
 const val COLLECTION_NAME = "COLLECTION_NAME"
 
 @Singleton
 class FirestoreDB @Inject constructor(
-    val repository: TaskRepository
+    private val repository: TaskRepository,
+    private val scope: CoroutineScope
 ) : ICloudDb {
 
     val TAG = this.javaClass.simpleName
     val database = Firebase.firestore
-    val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    private val collectionName = COLLECTION_NAME
 
-    private val collectionName = COLLECTION_NAME//_PREFIX + Settings.Secure.ANDROID_ID
-
-
-    fun delAndUpload(items: List<Task>) {
+    override fun uploadItems() {
         scope.launch {
-            deleteAllItems()
-            uploadAllItems(items)
-
+            clearDbSuspend()
+            uploadAllItems()
         }
     }
 
-    override fun uploadAllItems(items: List<Task>) {
-        try {
+    override fun uploadItems(items: List<Task>) {
+        scope.launch {
+            clearDb()
+            uploadListOfItems(items)
+        }
+    }
 
-            items.forEach { item ->
-                database
-                    .collection(collectionName)
-                    .add(item.toHashMap())
-                    .addOnSuccessListener {
-                        Log.e(TAG, "${it}")
-                    }
-                    .addOnFailureListener {
-                        Log.e(TAG, "${it.message}")
-                    }
-                    .addOnCompleteListener {
-                        Log.e(TAG, "${it}")
-                    }
-                    .addOnCanceledListener {
-                        Log.e(TAG, "Upload Canceled")
-                    }
+    private suspend fun uploadAllItems() {
+        try {
+            repository.getAllTasks().collect { tasks ->
+                tasks.forEach { task ->
+                    database
+                        .collection(collectionName)
+                        .add(task.toHashMap())
+                }
             }
         } catch (ex: Exception) {
             Log.e(TAG, "${ex.message}")
         }
     }
 
-    override fun downloadAllItems(): List<Task> {
-        val result = mutableListOf<Task>()
+    //upload items list in cloudDb
+    private fun uploadListOfItems(items: List<Task>) {
+        try {
+            Log.e(TAG, "count: ${items.count()}")
+            items.forEach { item ->
+                database
+                    .collection(collectionName)
+                    .add(item.toHashMap())
+            }
+        } catch (ex: Exception) {
+            Log.e(TAG, "${ex.message}")
+        }
+    }
+
+
+    private fun downloadAllItemsFromCloudDbAndSaveItInRoom() {
         database.collection(collectionName)
             .get()
             .addOnSuccessListener { snapShot ->
                 snapShot.forEach { document ->
-                    result.add(
-                        Task.from(document.data)
-                    )
-                }
-            }
-        return result
-    }
-
-    override fun downloadAllItemsAndSaveInDb() {
-        try {
-            database.collection(collectionName)
-                .get()
-                .addOnSuccessListener { snapShot ->
-                    snapShot.forEach { document ->
-                        scope.launch {
-                            repository.add(
-                                Task.from(document.data)
-                            )
-                        }
+                    scope.launch {
+                        repository.add(
+                            Task.from(document.data)
+                        )
                     }
                 }
-        }
-        catch (ex:Exception){
-            Log.e(TAG,"${ex.message}")
+            }
+    }
+
+
+    override fun downloadAllItems() {
+        scope.launch {
+            repository.clearDb()
+            downloadAllItemsFromCloudDbAndSaveItInRoom()
         }
     }
 
-    override suspend fun deleteAllItems() {
+    private suspend fun clearDbSuspend() {
         try {
-            // val id=database.collection(collectionName).id
             database.collection(collectionName)
                 .get()
                 .await()
@@ -115,8 +109,24 @@ class FirestoreDB @Inject constructor(
         } catch (ex: Exception) {
             Log.e(TAG, "${ex.message}")
         }
-
     }
 
-
+    override fun clearDb() {
+        scope.launch {
+            try {
+                database.collection(collectionName)
+                    .get()
+                    .await()
+                    .map {
+                        database
+                            .collection(collectionName)
+                            .document(it.id)
+                            .delete()
+                            .asDeferred()
+                    }.joinAll()
+            } catch (ex: Exception) {
+                Log.e(TAG, "${ex.message}")
+            }
+        }
+    }
 }

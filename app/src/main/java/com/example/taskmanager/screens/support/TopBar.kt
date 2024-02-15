@@ -8,6 +8,7 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,13 +51,13 @@ fun TopBar(
             )
         }
         else {
-            /*IconButton(onClick = {
+            IconButton(onClick = {
                 scope.launch {
                     scaffoldState.drawerState.open()
                 }
             }) {
                 Icon(Icons.Filled.Menu, "")
-            }*/
+            }
             Spacer(modifier = Modifier.weight(1f))
         }
         IconButton(onClick = {

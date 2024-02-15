@@ -111,8 +111,6 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE finished = true")
     fun getFinishedTasks(): Flow<List<Task>>
 
-
-
     @Query("SELECT * FROM tasks WHERE id = :id")
     fun getTaskById(id: Int): Task?
 
@@ -124,5 +122,8 @@ interface TaskDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(task: Task):Long
+
+    @Query("DELETE FROM tasks")
+    suspend fun clearDb()
 
 }
