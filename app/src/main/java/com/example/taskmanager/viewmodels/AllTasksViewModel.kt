@@ -40,7 +40,6 @@ class AllTasksViewModel @Inject constructor(
         )
     }
 
-
     fun delAndUploadCloud() = firestoreDB.uploadItems()
 
     fun downloadAllItemsFromCloud() = firestoreDB.downloadAllItems()

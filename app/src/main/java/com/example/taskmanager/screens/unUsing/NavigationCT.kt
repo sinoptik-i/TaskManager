@@ -1,14 +1,13 @@
-package com.example.taskmanager.screens
+package com.example.taskmanager.screens.unUsing
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.taskmanager.data.Task
-import com.example.taskmanager.viewmodels.OneTaskViewModel
-import com.example.taskmanager.viewmodels.OneTaskViewModelCurrentTask
+import com.example.taskmanager.screens.allTasks.ALL_TASKS_VIEW
+import com.example.taskmanager.screens.allTasks.AllTasksView
+import com.example.taskmanager.viewmodels.unUsing.OneTaskViewModelCurrentTask
 
 
 @Composable

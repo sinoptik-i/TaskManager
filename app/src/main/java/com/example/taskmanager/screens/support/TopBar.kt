@@ -17,7 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.taskmanager.screens.SearchState
+import com.example.taskmanager.screens.allTasks.SearchState
 import com.example.taskmanager.viewmodels.AllTasksViewModel
 import kotlinx.coroutines.launch
 

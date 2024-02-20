@@ -1,12 +1,10 @@
 package com.example.taskmanager
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.taskmanager.notifications.TaskNotification
@@ -35,6 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val contentState by oneTaskViewModel.state.collectAsState()
             val (task, isInProgress, error) = contentState
+           // Registration()
             TaskManagerTheme {
                 when {
                     task != null -> Navigation(task)

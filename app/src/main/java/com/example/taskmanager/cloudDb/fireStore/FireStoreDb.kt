@@ -5,10 +5,17 @@ import com.example.taskmanager.cloudDb.ICloudDb
 import com.example.taskmanager.data.Task
 import com.example.taskmanager.data.TaskRepository
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.asDeferred
@@ -27,7 +34,32 @@ class FirestoreDB @Inject constructor(
     val TAG = this.javaClass.simpleName
     val database = Firebase.firestore
 
-    private val collectionName = COLLECTION_NAME
+    private fun getCollectionName()=FirebaseAuth
+        .getInstance().currentUser?.email ?: COLLECTION_NAME
+
+/*
+    private val collectionName: StateFlow<String> = flow {
+
+        val name = FirebaseAuth
+            .getInstance().currentUser?.email ?: COLLECTION_NAME
+        emit(name)
+    }.stateIn(
+        scope,
+        SharingStarted.WhileSubscribed(),
+        COLLECTION_NAME
+    )*/
+
+
+    /*
+            MutableStateFlow(
+            FirebaseAuth
+                .getInstance().currentUser?.email ?: COLLECTION_NAME
+        ).stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(),
+            COLLECTION_NAME
+        )
+    */
 
     override fun uploadItems() {
         scope.launch {
@@ -48,7 +80,7 @@ class FirestoreDB @Inject constructor(
             repository.getAllTasks().collect { tasks ->
                 tasks.forEach { task ->
                     database
-                        .collection(collectionName)
+                        .collection(getCollectionName())
                         .add(task.toHashMap())
                 }
             }
@@ -63,7 +95,7 @@ class FirestoreDB @Inject constructor(
             Log.e(TAG, "count: ${items.count()}")
             items.forEach { item ->
                 database
-                    .collection(collectionName)
+                    .collection(getCollectionName())
                     .add(item.toHashMap())
             }
         } catch (ex: Exception) {
@@ -73,7 +105,7 @@ class FirestoreDB @Inject constructor(
 
 
     private fun downloadAllItemsFromCloudDbAndSaveItInRoom() {
-        database.collection(collectionName)
+        database.collection(getCollectionName())
             .get()
             .addOnSuccessListener { snapShot ->
                 snapShot.forEach { document ->
@@ -96,12 +128,12 @@ class FirestoreDB @Inject constructor(
 
     private suspend fun clearDbSuspend() {
         try {
-            database.collection(collectionName)
+            database.collection(getCollectionName())
                 .get()
                 .await()
                 .map {
                     database
-                        .collection(collectionName)
+                        .collection(getCollectionName())
                         .document(it.id)
                         .delete()
                         .asDeferred()
@@ -114,12 +146,12 @@ class FirestoreDB @Inject constructor(
     override fun clearDb() {
         scope.launch {
             try {
-                database.collection(collectionName)
+                database.collection(getCollectionName())
                     .get()
                     .await()
                     .map {
                         database
-                            .collection(collectionName)
+                            .collection(getCollectionName())
                             .document(it.id)
                             .delete()
                             .asDeferred()

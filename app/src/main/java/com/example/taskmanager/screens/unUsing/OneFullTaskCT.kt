@@ -1,4 +1,4 @@
-package com.example.taskmanager.screens
+package com.example.taskmanager.screens.unUsing
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.taskmanager.screens.ButtonOk
+import com.example.taskmanager.screens.CompletedButton
 import com.example.taskmanager.screens.support.DateTimePicker
 import com.example.taskmanager.screens.support.IOTextField
-import com.example.taskmanager.viewmodels.OneTaskViewModel
-import com.example.taskmanager.viewmodels.OneTaskViewModelCurrentTask
+import com.example.taskmanager.viewmodels.unUsing.OneTaskViewModelCurrentTask
 
 const val ONE_FULL_TASK_CT="ONE_FULL_TASK_CT"
 @Composable

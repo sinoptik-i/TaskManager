@@ -1,4 +1,4 @@
-package com.example.taskmanager.screens
+package com.example.taskmanager.screens.allTasks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.taskmanager.data.Task
-import com.example.taskmanager.screens.support.DrawerMenu
+import com.example.taskmanager.screens.drawer.DrawerMenu
 import com.example.taskmanager.screens.support.MyBottomAppBarPager
 import com.example.taskmanager.screens.support.SearchAlertDialog
 import com.example.taskmanager.screens.support.SupportSelectedModeForPager
@@ -39,7 +39,8 @@ enum class SearchState { OFF, INPUT, RESULTS }
 fun AllTasksView(
     onItemSelect: (task: Task) -> Unit,
     swapToOneItemView: () -> Unit,
-    allTasksViewModel: AllTasksViewModel= hiltViewModel()
+    onBackPressedForDrawer: () -> Unit = {},
+    allTasksViewModel: AllTasksViewModel = hiltViewModel()
 ) {
 
     val searchState = rememberSaveable { mutableStateOf(SearchState.OFF) }
@@ -62,16 +63,17 @@ fun AllTasksView(
                 searchState = searchState
             )
         },
-
         bottomBar = {
             if (supportSelectedMode.selectedMode.value) {
                 MyBottomAppBarPager(supportSelectedMode)
             }
         },
         drawerContent = {
-
             DrawerMenu(
-               // onBack = onBackForDrawer
+                drawerState = scaffoldState.drawerState,
+                 onBack = {
+                     closeDrawer()
+                 }
             )
         })
     { padding ->
@@ -79,7 +81,7 @@ fun AllTasksView(
             SearchAlertDialog(searchState)
         }
         val createNewItem = {
-           // onItemSelect(Task(0))
+            // onItemSelect(Task(0))
             onItemSelect(allTasksViewModel.getExampleItems(1)[0])
             swapToOneItemView()
         }

@@ -1,15 +1,12 @@
 package com.example.taskmanager.screens
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.taskmanager.data.Task
-import com.example.taskmanager.viewmodels.OneTaskViewModel
+import com.example.taskmanager.screens.allTasks.ALL_TASKS_VIEW
+import com.example.taskmanager.screens.allTasks.AllTasksView
 
 
 @Composable
@@ -32,6 +29,13 @@ fun Navigation(
             ONE_FULL_TASK
         }
     ) {
+        fun backToATV(){
+            navController.navigate(ALL_TASKS_VIEW) {
+                popUpTo(ALL_TASKS_VIEW) {
+                    inclusive = true
+                }
+            }
+        }
         composable(ALL_TASKS_VIEW) {
             AllTasksView(
                 onItemSelect = { selectedTask ->
@@ -39,6 +43,9 @@ fun Navigation(
                 },
                 swapToOneItemView = {
                     navController.navigate(ONE_FULL_TASK)
+                },
+                onBackPressedForDrawer = {
+                    backToATV()
                 }
             )
         }
@@ -47,6 +54,7 @@ fun Navigation(
             OneFullTask(
                 task = currentTask,
                 onContinueClicked = {
+                 //   backToATV()
                     navController.navigate(ALL_TASKS_VIEW) {
                         popUpTo(ALL_TASKS_VIEW) {
                             inclusive = true

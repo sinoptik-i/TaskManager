@@ -1,4 +1,4 @@
-package com.example.taskmanager.screens
+package com.example.taskmanager.screens.allTasks
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
