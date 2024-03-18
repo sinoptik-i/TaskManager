@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.taskmanager.screens.auth.LoginRegistration
-import com.example.taskmanager.screens.support.ButtonRow
-import com.example.taskmanager.viewmodels.AllTasksViewModel
 import com.example.taskmanager.viewmodels.AuthViewModel
 
 
@@ -19,7 +17,7 @@ fun DrawerMenu(
     onBack: () -> Unit = {},
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    val authDrawerState = authViewModel.isSigned2.collectAsState()
+    val authDrawerState = authViewModel.isSigned.collectAsState()
 
     if (authDrawerState.value) {
         SignedScreen()

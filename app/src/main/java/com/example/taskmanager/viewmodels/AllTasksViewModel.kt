@@ -95,7 +95,7 @@ class AllTasksViewModel @Inject constructor(
     }
 
 
-    val _query = MutableStateFlow("")
+    private val _query = MutableStateFlow("")
     fun getQuery() = _query.value
 
     fun flowAllItemsWithSearchForPager(pagerState: Int) = _query
@@ -105,9 +105,9 @@ class AllTasksViewModel @Inject constructor(
             if (query.isEmpty()) {
                 items
             } else {
-                items.filter {
-//                    it.title.contains(query)
-                    it.toString().contains(query)
+                items.filter {task->
+                    task.title.contains(query)
+                    //task.toString().contains(query)
                 }
             }
 

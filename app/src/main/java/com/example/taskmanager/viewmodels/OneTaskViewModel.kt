@@ -23,9 +23,7 @@ data class ContentState<T : Any>(
     val content: T? = null,
     val isInProgres: Boolean = false,
     val error: Throwable? = null
-) {
-
-}
+)
 
 @HiltViewModel
 class OneTaskViewModel @Inject constructor(

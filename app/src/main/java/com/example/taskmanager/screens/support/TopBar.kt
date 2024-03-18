@@ -1,5 +1,7 @@
 package com.example.taskmanager.screens.support
 
+import android.graphics.Color
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.Icon
@@ -30,7 +32,6 @@ fun TopBar(
 ) {
     val scope = rememberCoroutineScope()
     TopAppBar {
-
         if (searchState.value == SearchState.RESULTS) {
             IconButton(onClick = {
                 scope.launch {
